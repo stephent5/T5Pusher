@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+
+    <script src="Scripts/jquery-1.8.2.min.js"></script>
+    <script src="Scripts/T5Pusher.js"></script>
+
+  <!--  <script src="Scripts/jquery.signalR-1.0.1.min.js"></script>-->
+      <script src="Scripts/jquery.signalR-1.1.2.min.js"></script>
+        
+    <!--<script src="http://localhost:62261/signalr/hubs"></script>-->
+    <!-- <script src="https://t5pusher.t5livegames.com/signalr/hubs"></script>-->
+    <!--<script src="http://7bf57375c5d545708631c520e8166cd4.cloudapp.net/signalr/hubs"></script>--> <!--pusher2-->
+    <!--<script src="http://ec2-54-228-111-127.eu-west-1.compute.amazonaws.com/signalr/hubs"></script>--> <!--aws temp pusher-->
+    <!-- <script src="http://127.0.0.1/signalr/hubs"> </script>-->
+    <!--<script src="http://84d937b7df98433c99c60a4c135ecca6.cloudapp.net/signalr/hubs"></script>-->
+    <!-- <script src="http://localhost:62261/signalr/hubs"></script>--> <!--local redis pusher-->
+    <script src="signalr/hubs"></script><!--temp redis pusher-->
+</head>
+<body>
+
+    <b>T5Pusher Local (i.e this page is on the sSAME app as T5Pusher!!) Test App!!! - NOT adding header this time!!!</b>  <br />
+   <!-- <i> - this one is connecting to Azure CLOUD SERVICE http://7bf57375c5d545708631c520e8166cd4.cloudapp.net/ </i> <br /><br />-->
+
+     <input type="text" id="msg" />
+     <br />
+
+     <input type="button" id="create_SecureBroadcastGroup" value="Create Secure Broadcast Group" />
+     <input type="button" id="delete_SecureBroadcastGroup" value="Delete Secure Group" style="display:none;" />
+
+     <input type="button" id="broadcast" value="broadcastToAll" />
+     <input type="button" id="sendall" value="Send Normal Message To All" />
+     
+     <br /><br /><br />
+     <input type="button" id="join_testgroup" value="jointestgroup" /> 
+     <input type="button" id="SendToTestGroupOnly" value="Send To Test Group Only" />
+     
+     <br /><br /><br />
+     <input type="button" id="create_mytestSecureGroup_Nonbroadcast" value="Create Secure Group" />
+     <input type="button" id="delete_mytestSecureGroup_Nonbroadcast" value="Delete Secure Group" style="display:none;" />
+     <input type="button" id="join_mytestSecureGroup_Nonbroadcast" value="Join Secure Group" style="display:none;" />
+     <input type="button" id="SecureSendButton" value="Send To Secure Test Group Only" />
+
+     <br /><br /><br />
+     <input type="button" id="TestRestartButton" value="TestRestart" />
+
+     <ul id="messages"></ul>
+
+    <!--new way Via T5Pusher!!!!-->
+    <script type="text/javascript">
+        //T5Pusher.useJSONPAuthorisation();
+        //T5Pusher.setClientAuthorisationURL(WS_URL_ROOT + "/ValidateClient/ValidateAUTH");
+
+        T5Pusher.useSecureConnection();
+        T5Pusher.start("axahhj36p183m421");
+
+        T5Pusher.bind("eventReceived", function (data) {
+            alert('Received eventReceived with message: ' + data);
+        });
+
+        T5Pusher.bind("eventReceived2", function (data) {
+            alert('Received eventReceived2 with message: ' + data);
+        });
+
+        T5Pusher.bind("messageReceived", function (data) {
+            if (data[1]) {
+                $('#messages').append('<li>' + data[0] + data[1] + '</li>');
+            }
+            else {
+                $('#messages').append('<li>' + data[0] + '</li>');
+            }
+        });
+
+        T5Pusher.bind("broadcastGroupCreated", function (data) {
+            // alert("broadcastGroupCreated");
+        });
+
+        T5Pusher.bind("broadcastGroupCreationFailedFailed", function (data) {
+            $('#messages').append('<li>' + "broadcastGroupCreationFailedFailed - reason is " + data + '</li>');
+        });
+
+        T5Pusher.bind("NonbroadcastSecureGroupCreated", function (data) {
+            //alert("NonbroadcastSecureGroupCreated");
+        });
+
+        T5Pusher.bind("NonbroadcastSecureGroupFailed", function (data) {
+            $('#messages').append('<li>' + "NonbroadcastSecureGroupFailed - reason is " + data + '</li>');
+        });
+
+        T5Pusher.bind("GroupCreated", function (data) {
+            alert("Group Created data is " + data);
+        });
+
+        T5Pusher.bind("JoinGroupReturn", function (data) {
+            if (data) {
+                if (data.joined == 1) {
+                    $('#messages').append('<li>You have joined group ' + data.groupName + '</li>');
+
+                    //user has just joined a group - so hide the button to allow them to join!!!!!
+                    $("#join_" + data.groupName).hide();
+                }
+                else {
+                    $('#messages').append('<li>Failed to joined group ' + data.groupName + ', reason is ' + data.status + ' </li>');
+                }
+            }
+        });
+
+        T5Pusher.bind("CreateSecureGroupReturn", function (data) {
+            if (data) {
+                if (data.created == 1) {
+                    $('#messages').append('<li>You have created secure group ' + data.groupName + '</li>');
+
+                    //user has just created a group - so hide the button to allow them to create it!!!!!
+
+                    $("#create_" + data.groupName).hide();
+                    //and show the button to delete it!!!
+                    $("#delete_" + data.groupName).show();
+
+                    if (data.groupName == "mytestSecureGroup_Nonbroadcast") {
+                        $("#join_" + data.groupName).show();
+                    }
+                    else if (data.groupName == "myBroadcastGroup") {
+                        $("#delete_SecureBroadcastGroup").show();
+                        $("#create_SecureBroadcastGroup").hide();
+                    }
+                }
+                else {
+                    $('#messages').append('<li>Failed to create secure group ' + data.groupName + ', reason is ' + data.status + ' </li>');
+                }
+            }
+        });
+
+        T5Pusher.bind("DeleteSecureGroupReturn", function (data) {
+            if (data) {
+                if (data.deleted == 1) {
+                    $('#messages').append('<li>You have deleted secure group ' + data.groupName + '</li>');
+
+                    //user has just joined a group - so hide the button to allow them to join!!!!!
+                    $("#join_" + data.groupName).hide();
+
+                    //and show the button to delete it!!!
+                    $("#delete_" + data.groupName).show();
+
+                    if (data.groupName == "myBroadcastGroup") {
+                        $("#create_SecureBroadcastGroup").show();
+                        $("#delete_SecureBroadcastGroup").hide();
+                    }
+
+                }
+                else {
+                    $('#messages').append('<li>Failed to delete secure group ' + data.groupName + ', reason is ' + data.status + ' </li>');
+                }
+            }
+        });
+
+        T5Pusher.connectionbind("connected", function () {
+            $('#messages').append('Connected to T5Pusher.');
+
+            //T5Pusher.CreateSecureGroup("myfirstBroadcastGroup", 1, "broadcastGroupCreated", "broadcastGroupCreationFailedFailed");
+            //T5Pusher.CreateSecureGroup("myfirstSecureGroupNonbroadcast", 0, "NonbroadcastSecureGroupCreated", "NonbroadcastSecureGroupFailed");
+            //T5Pusher.DeleteSecureChannel("mySuperChannel");
+
+            //Once we are connected we can now call functions!!!!
+            $("#join_testgroup").click(function () {
+                //join group
+                T5Pusher.joinGroup("testgroup", "JoinGroupReturn");
+            });
+
+            //create secure groups////////////////////////////////////////////////////
+            $("#create_SecureBroadcastGroup").click(function () {
+                //create secure group - broadcast
+                T5Pusher.CreateSecureGroup("myBroadcastGroup", "CreateSecureGroupReturn", 1);
+            });
+
+            $("#create_mytestSecureGroup_Nonbroadcast").click(function () {
+                //create secure group - normal non broadcast group
+                T5Pusher.CreateSecureGroup("mytestSecureGroup_Nonbroadcast", "CreateSecureGroupReturn");
+            });
+            //end create secure groups/////////////////////////////////////////////////
+
+            //////////delete secure groups//////////////////////////////////////////////
+            $("#delete_SecureBroadcastGroup").click(function () {
+                //join group
+                T5Pusher.DeleteSecureGroup("myBroadcastGroup", "DeleteSecureGroupReturn");
+            });
+
+            $("#delete_mytestSecureGroup_Nonbroadcast").click(function () {
+                //join group
+                T5Pusher.DeleteSecureGroup("mytestSecureGroup_Nonbroadcast", "DeleteSecureGroupReturn");
+            });
+            ////////////end delete secure groups/////////////////////////////////////////
+
+            $("#join_mytestSecureGroup_Nonbroadcast").click(function () {
+                //join group
+                T5Pusher.JoinSecureGroup("mytestSecureGroup_Nonbroadcast", "JoinGroupReturn");
+            });
+
+            $("#sendall").click(function () {
+                // Call the chat method on the server
+                var messageArray = new Array();
+                messageArray.push($('#msg').val());
+                T5Pusher.push("messageReceived", messageArray);
+            });
+
+            $("#broadcast").click(function () {
+                // Call the chat method on the server
+                var messageArray = new Array();
+                messageArray.push($('#msg').val());
+                T5Pusher.push("messageReceived", messageArray, "myBroadcastGroup");
+            });
+
+            $("#SendToTestGroupOnly").click(function () {
+                // Call the chat method on the s*erver
+                var messageArray = new Array();
+                messageArray.push($('#msg').val());
+                T5Pusher.push("messageReceived", messageArray, "testgroup");
+            });
+
+
+            $("#SecureSendButton").click(function () {
+                // Call the chat method on the s*erver
+                var messageArray = new Array();
+                messageArray.push($('#msg').val());
+                T5Pusher.push("messageReceived", messageArray, "mytestSecureGroup_Nonbroadcast");
+            });
+
+
+            $("#TestRestartButton").click(function () {
+                T5Pusher.restartTest();
+            });
+
+        });
+
+        T5Pusher.connectionbind("connectionattemptfailed", function () {
+            
+            $('#messages').append('<li>' + 'connected Failed!!!! ConnectionStatus is : ' + T5Pusher.connection.connectionstatus + '</li>');
+
+            //try to connect again!!!!
+            T5Pusher.start("app1:test");
+        });
+    </script>
+
+</body>
+</html>

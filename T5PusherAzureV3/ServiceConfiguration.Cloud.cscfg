@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="T5PusherAzureV3" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="3" osVersion="*" schemaVersion="2013-03.2.0">
+  <Role name="T5Pusher">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=portalvhdsrfjwxjr6xvny;AccountKey=mvn2rlCZsMwOyYVYtricSSgkSPIF+DQ8FcmbMUCRyU9iAQDjYpxvt2UhT7ZQpL7Qxkt1xf+UF60g9b4gUTEnpg==" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="t5pusher" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBnQYJKoZIhvcNAQcDoIIBjjCCAYoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCED9SXrK2yHu5RvU3vSFnX8MwDQYJKoZIhvcNAQEBBQAEggEACed2hRqZvtWlDOSTOiIe7L9z19/VhUrDCZsuMFD9H8AVIycNfvgCp0qGIDspgU7bvYrA+uRrKpyAyRutWIRzbh3pjQK2IZByWRKOtZjJu9kY38UesWiR+63oa1Y7GuMPAI4fVsn/UAij3POurXY3/HWxfeZSTY/6fU0uKuR3TkjPjP7xzRspc0GXpfqV92a0XKLun3VsZo/2SpZPzeJuP31qnHFlTfwB1ZyIp6v62m9WWLWlTwQhQPtqOQ7GMRINgPu7fBLHG7SkUmrp3Pelpub808I8wVqhHd+WJzz8VNNlXrd3jLEWYxkrSveMT+blRgPPyMFpXPzGCP56oUtsJDAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECEqBflyIXbAvgBCV7k5K2hB94JWj6t69Qk4I" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2014-06-21T23:59:59.0000000+01:00" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="2FB74A7B0B1D5DD56B26368B831E72ACA179C91F" thumbprintAlgorithm="sha1" />
+      <!--<Certificate name="T5Pusher" thumbprint="A85429992FCF27ED8F891F36D8AFE57C70E9402E" thumbprintAlgorithm="sha1" />-->
+      <Certificate name="FriendPusher" thumbprint="483EDFD6F1B6A81B9A717E6E7F490752D879C43C" thumbprintAlgorithm="sha1" />
+      <!--<Certificate name="T5PusherBackup" thumbprint="A8315F1C512108D64586002FE44629FF9DFF8C7C" thumbprintAlgorithm="sha1" />-->
+    </Certificates>
+  </Role>
+</ServiceConfiguration>

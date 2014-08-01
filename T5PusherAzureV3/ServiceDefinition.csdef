@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceDefinition name="T5PusherAzureV3" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-03.2.0">
+  <WebRole name="T5Pusher" vmsize="Medium">
+    <Certificates>
+      <!--<Certificate name="T5Pusher" storeLocation="LocalMachine" storeName="CA" />-->
+      <Certificate name="FriendPusher" storeLocation="LocalMachine" storeName="CA" />
+      <!--<Certificate name="T5PusherBackup" storeLocation="LocalMachine" storeName="CA" />-->
+    </Certificates>
+    <Sites>
+      <Site name="Web">
+        <Bindings>
+          <Binding name="Endpoint1" endpointName="Endpoint1" />
+          <Binding name="HttpsIn" endpointName="HttpsIn" />
+        </Bindings>
+      </Site>
+    </Sites>
+    <Endpoints>
+      <InputEndpoint name="Endpoint1" protocol="http" port="80" />
+      <!--<InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="T5Pusher" />-->
+      <InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="FriendPusher" />
+      <!--<InputEndpoint name="HttpsIn" protocol="https" port="443" certificate="T5PusherBackup" />-->
+    </Endpoints>
+    <Imports>
+      <Import moduleName="Diagnostics" />
+      <Import moduleName="RemoteAccess" />
+      <Import moduleName="RemoteForwarder" />
+    </Imports>
+  </WebRole>
+</ServiceDefinition>
